@@ -4,6 +4,7 @@ members = [
     "fluent-bundle",
     "fluent-fallback",
     "fluent-resmgr",
+    "fluent-langneg",
     "fluent-pseudo",
     "fluent-testing",
     "fluent",
