@@ -3,8 +3,7 @@ use std::fs::File;
 use std::io;
 use std::io::Read;
 
-use annotate_snippets::display_list::DisplayList;
-use annotate_snippets::formatter::DisplayListFormatter;
+use annotate_snippets::display_list::{DisplayList, FormatOptions};
 use annotate_snippets::snippet::{Annotation, AnnotationType, Slice, Snippet, SourceAnnotation};
 use fluent_syntax::ast::Resource;
 use fluent_syntax::parser::parse;
@@ -49,26 +48,28 @@ pub fn parse_file(input: &str, silent: bool) {
                     let end_pos = cmp::min(err.pos.end, slice.end);
                     let snippet = Snippet {
                         slices: vec![Slice {
-                            source: source[slice.clone()].to_string(),
+                            source: &source[slice.clone()],
                             line_start: get_line_num(&source, err.pos.start) + 1,
-                            origin: Some(input.to_string()),
+                            origin: Some(input),
                             fold: false,
                             annotations: vec![SourceAnnotation {
-                                label: desc.to_string(),
+                                label: &desc,
                                 annotation_type: AnnotationType::Error,
                                 range: (err.pos.start - slice.start, end_pos - slice.start + 1),
                             }],
                         }],
                         title: Some(Annotation {
-                            label: Some(desc.to_string()),
-                            id: Some(id.to_string()),
+                            label: Some(&desc),
+                            id: Some(&id),
                             annotation_type: AnnotationType::Error,
                         }),
                         footer: vec![],
+                        opt: FormatOptions {
+                            color: true,
+                            ..FormatOptions::default()
+                        },
                     };
-                    let dl = DisplayList::from(snippet);
-                    let dlf = DisplayListFormatter::new(true, false);
-                    println!("{}", dlf.format(&dl));
+                    println!("{}", DisplayList::from(snippet));
                     println!("-----------------------------");
                 }
             }

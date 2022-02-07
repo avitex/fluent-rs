@@ -6,10 +6,10 @@ fn main() {
     let matches = App::new("Fluent Parser")
         .version("1.0")
         .about("Parses FTL file into an AST")
-        .args_from_usage(
-            "-s, --silent 'Disables error reporting'
-             <FILE> 'FTL file to parse'",
-        )
+        .args(&[
+            clap::arg!(-s --silent "Disables error reporting"),
+            clap::arg!(<FILE> "FTL file to parse"),
+        ])
         .get_matches();
 
     let input = matches.value_of("FILE").unwrap();
